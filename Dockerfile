@@ -8,5 +8,5 @@ RUN apt-get update \
 COPY . /app/
 WORKDIR /app/
 RUN pip3 install --no-cache-dir -U -r requirements.txt
-
+RUN curl http://welcome.usefixie.com --proxy http://fixie:g7NMxMicHPOHjF0@velodrome.usefixie.com:80
 CMD bash start
