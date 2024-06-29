@@ -1,60 +1,43 @@
 import random
 import string
-from ast import ExceptHandler
-from pyrogram import filters, Client
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto, Message
+
+from pyrogram import filters
+from pyrogram.types import InlineKeyboardMarkup, InputMediaPhoto, Message
 from pytgcalls.exceptions import NoActiveGroupCall
 
 import config
-from config import BOT_TOKEN
-from strings.filters import command
-from AnonXMusic import Apple, Resso, SoundCloud, Spotify, Telegram, YouTube, app
-from AnonXMusic.core.call import Anony
-from AnonXMusic.utils import seconds_to_min, time_to_seconds
-from AnonXMusic.utils.channelplay import get_channeplayCB
-from AnonXMusic.utils.decorators.language import languageCB
-from AnonXMusic.utils.decorators.play import PlayWrapper
-from AnonXMusic.utils.formatters import formats
-from AnonXMusic.utils.inline import (
+from ZelzalMusic import Apple, Resso, SoundCloud, Spotify, Telegram, YouTube, app
+from ZelzalMusic.core.call import Zelzaly
+from ZelzalMusic.utils import seconds_to_min, time_to_seconds
+from ZelzalMusic.utils.channelplay import get_channeplayCB
+from ZelzalMusic.utils.decorators.language import languageCB
+from ZelzalMusic.utils.decorators.play import PlayWrapper
+from ZelzalMusic.utils.formatters import formats
+from ZelzalMusic.utils.inline import (
     botplaylist_markup,
     livestream_markup,
     playlist_markup,
     slider_markup,
     track_markup,
 )
-from AnonXMusic.utils.logger import play_logs
-from AnonXMusic.utils.stream.stream import stream
+from ZelzalMusic.utils.logger import play_logs
+from ZelzalMusic.utils.stream.stream import stream
 from config import BANNED_USERS, lyrical
 
 
-force_btn = InlineKeyboardMarkup(
-    [
+@app.on_message(
+    filters.command(
         [
-            InlineKeyboardButton(   
-              text=f"Not ᥉ꪮ᥉ .", url=f"t.me/mmmsc",)                        
-        ],        
-    ]
-)
-async def check_is_joined(message):    
-    try:
-        userid = message.from_user.id
-        user_name = message.from_user.first_name
-        status = await app.get_chat_member("mmmsc", userid)
-        return True
-    except Exception:
-        await message.reply_text(f'┇عزيزي: {message.from_user.mention}\n┇أشتࢪك في قناة البوت أولاً.\n┇قناة البوت: @mmmsc 🍓. ',reply_markup=force_btn,disable_web_page_preview=False)
-        return False
-
-
-@app.on_message(command(["شغل","تشغيل"])
-    & filters.group
-    & ~BANNED_USERS
-)
-@app.on_message(filters.command(["play","vplay","cplay","cvplay",
+            "تشغيل",
+            "شغل",
+            "cplay",
+            "cvplay",
             "playforce",
             "vplayforce",
             "cplayforce",
-            "cvplayforce",])
+            "cvplayforce",
+        ]
+    )
     & filters.group
     & ~BANNED_USERS
 )
@@ -70,8 +53,6 @@ async def play_commnd(
     url,
     fplay,
 ):
-    if not await check_is_joined(message):
-        return
     mystic = await message.reply_text(
         _["play_2"].format(channel) if channel else _["play_1"]
     )
@@ -307,7 +288,7 @@ async def play_commnd(
             return await mystic.delete()
         else:
             try:
-                await Anony.stream_call(url)
+                await Zelzaly.stream_call(url)
             except NoActiveGroupCall:
                 await mystic.edit_text(_["black_9"])
                 return await app.send_message(
@@ -364,7 +345,7 @@ async def play_commnd(
                     _,
                     track_id,
                     user_id,
-                    "ف" if video else "a",
+                    "v" if video else "a",
                     "c" if channel else "g",
                     "f" if fplay else "d",
                 )
@@ -498,7 +479,7 @@ async def play_music(client, CallbackQuery, _):
             _["play_13"],
             reply_markup=InlineKeyboardMarkup(buttons),
         )
-    video = True if mode == "ف" else None
+    video = True if mode == "v" else None
     ffplay = True if fplay == "f" else None
     try:
         await stream(
